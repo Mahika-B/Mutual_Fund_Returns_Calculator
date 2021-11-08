@@ -1,12 +1,10 @@
 import dash
-import pandas as pd
 from dash import html
 from dash import dcc
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 import plotly.graph_objects as go
-import plotly.express as px
-from plotly.graph_objs import Layout
+# from plotly.graph_objs import Layout
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.QUARTZ], meta_tags=[
         {"name": "viewport", "content": "width=device-width, initial-scale=0.4"}])
@@ -104,17 +102,16 @@ app.layout = html.Div([
      Input('l-rate-slider', 'value')]
 )
 def update_l_stats(amount, time, rate):
-    total_inv = amount*time
-    estimated = round(amount*(1+rate/100)**time)
+    total_inv = amount
+    estimated = round(amount*(1+rate/100)**time - amount)
     total_value = total_inv + estimated
     labels = ['Total Investment', 'Estimated Returns']
     values = [total_inv, estimated]
-    # frame = pd.concat(labels, values).reset_index()
-    # print(frame)
-    layout = Layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
+
+    layout = go.Layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
     fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.5)], layout=layout)
     fig.update_traces(marker=dict(colors=['#d93277', '#5dd9be']))
-    # fig_other = px.pie(frame, names=labels, values=values)
+
     return html.Div([
         dbc.Row([
             dbc.Col([
